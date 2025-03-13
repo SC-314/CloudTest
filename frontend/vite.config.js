@@ -1,9 +1,7 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  server: {
-    proxy: {
-      '/counter': 'http://localhost:3000'
-    }
-  }
-})
+  plugins: [react()],
+  root: './', // Ensure Vite looks in the correct directory
+});
