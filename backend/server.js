@@ -37,6 +37,16 @@ app.post("/counter", async (req, res) => {
   }
 });
 
+app.get("/counter", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM counter ORDER BY created_at DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Backend running on port ${port}`);
 });
