@@ -15,7 +15,6 @@ function App() {
 
     try {
       const response = await fetch(
-        console.log(import.meta.env.VITE_API_URL + "/counter")
         import.meta.env.VITE_API_URL + "/counter",
         {
           method: "POST",
