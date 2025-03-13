@@ -7,6 +7,7 @@ function App() {
   const [success, setSuccess] = useState(false);
   const [testDbMessage, setTestDbMessage] = useState(null); // State to hold test DB result
 
+  // Function to handle submitting the count to the backend
   async function handleClick() {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -24,19 +25,23 @@ function App() {
       );
 
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      
+
       const data = await response.json();
       setSuccess(true);
       setCount(0);
     } catch (error) {
+      console.error("Error during submission:", error); // Log the error to the console
       setError(error.message);
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  // New function to test DB connection
+  // Function to test DB connection
   async function handleTestDbConnection() {
+    console.log("Testing DB connection...");
+    console.log("API URL:", import.meta.env.VITE_API_URL); // Log the API URL for debugging
+
     try {
       const response = await fetch(import.meta.env.VITE_API_URL + "/test-db");
 
@@ -45,6 +50,7 @@ function App() {
       const data = await response.json();
       setTestDbMessage(`DB Connection Test Successful! Current time: ${data.current_time}`);
     } catch (error) {
+      console.error("Error testing DB connection:", error); // Log the error to the console
       setTestDbMessage(`Error testing DB connection: ${error.message}`);
     }
   }
