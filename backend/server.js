@@ -7,9 +7,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-}));
+app.use(cors());
 
 // Database connection
 const db = new pg.Pool({
