@@ -8,25 +8,30 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173"
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
 }));
 
 // Database connection
-const pool = new pg.Pool({
+const db = new pg.Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 });
+
+// Test database connection
+db.connect()
+  .then(() => console.log("Connected to PostgreSQL database"))
+  .catch(err => console.error("Database connection error:", err));
 
 // API Endpoint
 app.post("/counter", async (req, res) => {
   const { count } = req.body;
-  
+
   try {
-    const result = await pool.query(
+    const result = await db.query(
       "INSERT INTO counter (counter) VALUES ($1) RETURNING *",
       [count]
     );
@@ -37,16 +42,17 @@ app.post("/counter", async (req, res) => {
   }
 });
 
-app.get("/counter", async (req, res) => {
+app.listen(port, () => {
+  console.log(`Backend running on port ${port}`);
+});
+
+
+app.get("/test-db", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM counter ORDER BY created_at DESC");
-    res.json(result.rows);
+    const result = await db.query("SELECT NOW() AS current_time");
+    res.json(result.rows[0]);
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
-});
-
-app.listen(port, () => {
-  console.log(`Backend running on port ${port}`);
 });
